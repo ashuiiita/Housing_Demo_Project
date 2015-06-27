@@ -27,9 +27,9 @@ class UsersController < ApplicationController
 		
 		if find_user
 			r = rand(100)
-			userlogin = LoginUser.new(name: user[:name], email: user[:email], token: r) 
+			userlogin = LoginUser.new(name: user[:name], email: user[:email], token: r, latitude: user[:latitude] , longitude: user[:longitude]) 
 			userlogin.save
-			render json: {name: find_user[:name], email: find_user[:email] , token: r , status: "1"}
+			render json: {name: find_user[:name], email: find_user[:email] , token: r , status: "1" ,latitude: user[:latitude] , longitude: user[:longitude]}
 		else
 			render json: { status: "0"}
 		end
@@ -37,10 +37,10 @@ class UsersController < ApplicationController
 
  	private
 	  def user_params
-	    params.permit(:name, :email,:password)
+	    params.permit(:name, :email,:password,:phone)
 	  end
 	  def user_log_params
-	  	params.permit(:email,:password)
+	  	params.permit(:email,:password,:latitude,:longitude)
 	  end
 
 end

@@ -1,0 +1,2 @@
+      invoke  active_record
+      create    db/migrate/20150627091609_add_phone_to_user.rb
