@@ -12,6 +12,7 @@ Rails.application.routes.draw do
 
   post '/users' => 'users#create'
   post '/users/login' => 'users#authenticate'
+  post '/users/nearby' => 'users#find_users'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
