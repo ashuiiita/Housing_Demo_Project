@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   post '/users' => 'users#create'
   post '/users/login' => 'users#authenticate'
   post '/users/nearby' => 'users#find_users'
+  post '/users/positionchange' => "users#position_change"
 
 
   resources :posts
