@@ -1,13 +1,17 @@
 class UsersController < ApplicationController
 	protect_from_forgery :except => :create
+
 	def new
 	end
+	
 	def show
    	  @user = User.find(params[:id])
   	end
+  	
   	def index
     	@users = User.all
   	end
+	
 	def create
 	  @user = User.new(user_params)
 	  @noUser = {status:"0"}
@@ -21,6 +25,7 @@ class UsersController < ApplicationController
 	  end
 
 	end
+	
 	def authenticate
 		user = user_log_params;
 		find_user = User.find_by(email: user[:email],password: user[:password])
@@ -86,9 +91,15 @@ class UsersController < ApplicationController
 	  def user_params
 	    params.permit(:name, :email,:password,:phone)
 	  end
+
+	  def user_params_desk
+	  	params.require(:user).permit(:name, :email,:password,:phone)
+	  end
+	  
 	  def user_log_params
 	  	params.permit(:email,:password,:latitude,:longitude)
 	  end
+	
 	  def user_find_params
 	  	params.permit(:email,:latitude,:longitude)
 	  end
@@ -96,4 +107,5 @@ class UsersController < ApplicationController
 	  	params.permit(:email,:token,:latitude,:longitude)
 	  end
 
+	 
 end
