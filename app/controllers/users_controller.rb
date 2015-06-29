@@ -1,46 +1,52 @@
 class UsersController < ApplicationController
 	protect_from_forgery :except => :create
+
 	def new
 	end
+	
 	def show
    	  @user = User.find(params[:id])
   	end
+  	
   	def index
     	@users = User.all
   	end
+	
 	def create
-	  @user = User.new(user_params)
-	  @noUser = {status:"0"}
-	  @yesUser = {status:"1"}
+	  user = User.new(params.require(:user).permit(:name, :email, :password, :phonenumber))
+	  noUser = {status:"0"}
+	  yesUser = {status:"1"}
 	 
 	  if User.find_by email: @user[:email]
-	  	render json: @noUser
+	  	render json: noUser
 	  else
-	  	@user.save
-	  	render json: @yesUser
+	  	user.save
+	  	render json: yesUser
 	  end
-
 	end
+	
+	#TODO better token system and password hashing
 	def authenticate
-		user = user_log_params;
-		find_user = User.find_by(email: user[:email],password: user[:password])
-		
+		user = User.new(params.require(:user).permit(:email, :password))
+		find_user = User.find_by(email: user.email, password: user.password)
 		if find_user
 			r = rand(100)
-			userlogin = LoginUser.new(name: user[:name], email: user[:email], token: r, latitude: user[:latitude] , longitude: user[:longitude]) 
+			userlogin = LoginUser.new(user_id: find_user.id, token: r) 
 			userlogin.save
-			render json: {name: find_user[:name], email: find_user[:email] , token: r , status: "1" ,latitude: user[:latitude] , longitude: user[:longitude]}
+			render json: { token: r , status: "1" }
 		else
 			render json: { status: "0"}
 		end
 	end
 
  	private
-	  def user_params
+	
+	def user_params
 	    params.permit(:name, :email,:password,:phone)
-	  end
-	  def user_log_params
+	end
+	
+	def user_log_params
 	  	params.permit(:email,:password,:latitude,:longitude)
-	  end
+	end
 
 end
