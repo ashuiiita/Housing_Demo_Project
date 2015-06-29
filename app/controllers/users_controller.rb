@@ -40,6 +40,22 @@ class UsersController < ApplicationController
 		end
 	end
 
+	def position_change
+		user_login = LoginUser.find_by(email:user_locationchange_params[:email] , token: user_locationchange_params[:token])
+		if user_login
+			lat = (user_locationchange_params[:latitude]).to_f
+			lat = lat * 0.0174532925
+			lat = lat.round(4)
+			lon = (user_locationchange_params[:longitude]).to_f
+			lon = lon * 0.0174532925
+			lon = lon.round(4)
+			user_login.latitude = lat
+			user_login.longitude = lon
+			user_login.save
+		end
+		render json: {}
+	end
+
 	def find_users
 		find_params = user_find_params
 		lat = (find_params[:latitude]).to_f
@@ -75,6 +91,9 @@ class UsersController < ApplicationController
 	  end
 	  def user_find_params
 	  	params.permit(:email,:latitude,:longitude)
+	  end
+	  def user_locationchange_params
+	  	params.permit(:email,:token,:latitude,:longitude)
 	  end
 
 end
