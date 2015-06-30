@@ -1,4 +1,5 @@
 class PostsController < ApplicationController
+	protect_from_forgery :except => :create
 	def new
 		
 	end
@@ -33,6 +34,7 @@ class PostsController < ApplicationController
 		lon = lon * 0.0174532925
 		lon = lon.round(4)
         nearby_users = Array.new
+        nearby_users_ids = Array.new
 		LoginUser.all.each do |user|
 			t =  user.latitude - lat
 			t1 = user.longitude - lon
@@ -43,15 +45,27 @@ class PostsController < ApplicationController
 			t6 = 2 * Math.asin(t5)
 			t7 = 6371 * t6
 			if(t7 <= 100.0)
-				user_find = {name: user.name , email: user.email , distance: t7}
+				user_find = {userId: user.user_id,name: user.name , email: user.email , distance: t7}
 				nearby_users.push(user_find)
+				nearby_users_ids.push(user.user_id)
 			end
 		end
-		nearby_users
+		nearby_users_full = Array.new
+		Post.all.each do |post|
+			if nearby_users_ids.include?post.user_id
+				userName = User.find_by(id: post.user_id)
+				t = {question: post.content , creation: post.created_at , latitude: post.latitude , longitude: post.longitude , name: userName.name}
+				nearby_users_full.push(t)
+			end
+		end
+		render json: nearby_users_full
 	end
-
+		
 	def post_params
 	  	params.require(:post).permit(:content, :user_id)
+	end
+	def user_find_params
+		params.permit(:email,:latitude,:longitude)
 	end
 
 end

@@ -14,12 +14,12 @@ Rails.application.routes.draw do
   post '/users/login' => 'users#authenticate'
   post '/users/nearby' => 'users#find_users'
   post '/users/positionchange' => "users#position_change"
-
+  
 
   resources :posts
 
   post '/posts' => 'posts#create'
-    
+  post '/posts/nearby' => 'posts#find_users'  
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
