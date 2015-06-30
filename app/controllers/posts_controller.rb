@@ -13,11 +13,12 @@ class PostsController < ApplicationController
   	end
 
 	def create
-	  post = Post.new(post_params)
 	  fail = {status:"0"}
 	  success = {status:"1"}
-	 
-	  if User.find(post[:user_id])
+	  user_id = LoginUser.find_by(token: post_params[:token], email:post_params[:email])
+	  post = Post.new(content: post_params[:content], user_id: user_id)
+
+	  if User.find(user_id)
 	  	post.save
 	  	render json: success
 	  else
@@ -62,7 +63,7 @@ class PostsController < ApplicationController
 	end
 		
 	def post_params
-	  	params.require(:post).permit(:content, :user_id)
+	  	params.require(:post).permit(:content, :email, :token)
 	end
 	def user_find_params
 		params.permit(:email,:latitude,:longitude)
