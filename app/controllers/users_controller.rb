@@ -9,7 +9,7 @@ class UsersController < ApplicationController
   	end
   	
   	def index
-    	@users = User.all
+    	render json: Post.all
   	end
 	
 	def create
@@ -57,8 +57,10 @@ class UsersController < ApplicationController
 			user_login.latitude = lat
 			user_login.longitude = lon
 			user_login.save
+			render json: { status: "1"}
+		else
+			render json: { status: "0"}
 		end
-		render json: {}
 	end
 
 
@@ -78,6 +80,7 @@ class UsersController < ApplicationController
 	  def user_find_params
 	  	params.permit(:email,:latitude,:longitude)
 	  end
+	  
 	  def user_locationchange_params
 	  	params.permit(:email,:token,:latitude,:longitude)
 	  end

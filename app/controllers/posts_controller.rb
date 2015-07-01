@@ -1,8 +1,5 @@
 class PostsController < ApplicationController
 	protect_from_forgery :except => :create
-	def new
-		
-	end
 
 	def show
    	  @post = Post.find(params[:id])
@@ -12,11 +9,15 @@ class PostsController < ApplicationController
   		@posts = Post.all
   	end
 
+  	def getAll
+  		render json: Post.all
+  	end
+
 	def create
 	  fail = {status:"0"}
 	  success = {status:"1"}
 	  user_id = LoginUser.find_by(token: post_params[:token], email:post_params[:email])
-	  post = Post.new(content: post_params[:content], user_id: user_id)
+	  post = Post.new(content: post_params[:content], user_id: user_id, longitude: post_params[:longitude], latitude: post_params[:latitude])
 
 	  if User.find(user_id)
 	  	post.save
@@ -26,7 +27,7 @@ class PostsController < ApplicationController
 	  end
 	end
 
-	def find_users
+	def find_nearby_posts
 		find_params = user_find_params
 		lat = (find_params[:latitude]).to_f
 		lat = lat *  0.0174532925
@@ -52,21 +53,15 @@ class PostsController < ApplicationController
 			end
 		end
 		nearby_users_full = Array.new
-		Post.all.each do |post|
-			if nearby_users_ids.include?post.user_id
-				userName = User.find_by(id: post.user_id)
-				t = {question: post.content , creation: post.created_at , latitude: post.latitude , longitude: post.longitude , name: userName.name}
-				nearby_users_full.push(t)
-			end
-		end
-		render json: nearby_users_full
+		render json: Post.where("user_id in (?)", nearby_users_ids)
 	end
 		
 	def post_params
-	  	params.require(:post).permit(:content, :email, :token)
+	  	params.permit(:content, :email, :token)
 	end
+	
 	def user_find_params
-		params.permit(:email,:latitude,:longitude)
+		params.permit(:token, :email,:latitude,:longitude)
 	end
 
 end

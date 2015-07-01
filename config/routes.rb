@@ -14,12 +14,17 @@ Rails.application.routes.draw do
   post '/users/login' => 'users#authenticate'
   post '/users/nearby' => 'users#find_users'
   post '/users/positionchange' => "users#position_change"
+
+
   
 
   resources :posts
 
+  post '/posts/vinil' => 'posts#getALL'
   post '/posts' => 'posts#create'
-  post '/posts/nearby' => 'posts#find_users'  
+  post   '/posts/nearby' => 'posts#find_nearby_posts'  
+  post '/posts/comments' => 'posts#get_all_comments'
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
