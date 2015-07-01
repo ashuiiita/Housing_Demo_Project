@@ -55,7 +55,7 @@ class PostsController < ApplicationController
 		Post.all.each do |post|
 			if nearby_users_ids.include?post.user_id
 				userName = User.find_by(id: post.user_id)
-				t = {question: post.content , creation: post.created_at , latitude: post.latitude , longitude: post.longitude , name: userName.name}
+				t = {phone: userName.phone,question: post.content , creation: post.created_at , latitude: post.latitude , longitude: post.longitude , name: userName.name}
 				nearby_users_full.push(t)
 			end
 		end
