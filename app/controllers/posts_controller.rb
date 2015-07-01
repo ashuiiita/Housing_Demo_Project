@@ -52,7 +52,6 @@ class PostsController < ApplicationController
 				nearby_users_ids.push(user.user_id)
 			end
 		end
-		nearby_users_full = Array.new
 		render json: Post.where("user_id in (?)", nearby_users_ids)
 	end
 		
