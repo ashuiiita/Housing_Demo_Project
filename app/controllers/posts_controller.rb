@@ -54,7 +54,7 @@ class PostsController < ApplicationController
 		    t5 = Math.sqrt(t4*1.0)
 			t6 = 2 * Math.asin(t5)
 			t7 = 6371 * t6
-			if(t7 <= 100.0)
+			if(t7 <= 100.0 && user.email != find_params[:email])
 				user_find = {userId: user.user_id,name: user.name , email: user.email , distance: t7}
 				nearby_users.push(user_find)
 				nearby_users_ids.push(user.user_id)
@@ -62,7 +62,6 @@ class PostsController < ApplicationController
 		end
 		all_users = Post.where("user_id in (?)", nearby_users_ids)
 		nearby_users_array.push(all_users)
-		nearby_users_array.push(user.phone)
 		render json: {user_list: nearby_users_array}  
 	end
 		
