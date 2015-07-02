@@ -44,6 +44,7 @@ class PostsController < ApplicationController
 		lon = lon.round(4)
         nearby_users = Array.new
         nearby_users_ids = Array.new
+        nearby_users_array = Array.new
 		LoginUser.all.each do |user|
 			t =  user.latitude - lat
 			t1 = user.longitude - lon
@@ -59,8 +60,10 @@ class PostsController < ApplicationController
 				nearby_users_ids.push(user.user_id)
 			end
 		end
-		render json: nearby_users
-		#render json: Post.where("user_id in (?)", nearby_users_ids)
+		all_users = Post.where("user_id in (?)", nearby_users_ids)
+		nearby_users_array.push(all_users)
+		nearby_users_array.push(user.phone)
+		render json: {user_list: nearby_users_array}  
 	end
 		
 	def post_params
