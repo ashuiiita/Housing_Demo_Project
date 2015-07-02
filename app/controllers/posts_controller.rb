@@ -45,6 +45,8 @@ class PostsController < ApplicationController
         nearby_users = Array.new
         nearby_users_ids = Array.new
         nearby_users_array = Array.new
+        nearby_users_phone = Array.new
+
 		LoginUser.all.each do |user|
 			t =  user.latitude - lat
 			t1 = user.longitude - lon
@@ -55,15 +57,23 @@ class PostsController < ApplicationController
 			t6 = 2 * Math.asin(t5)
 			t7 = 6371 * t6
 			if(t7 <= 100.0)
-				user_find = {userId: user.user_id,name: user.name , email: user.email , distance: t7}
-				nearby_users.push(user_find)
+				user_find = {userId: user.user_id,name: user.name , email: user.email , distance: t7 }
 				nearby_users_ids.push(user.user_id)
+				nearby_users.push(user_find)
 			end
+			
+				# nearby_users_ids.push(user.user_id)
+				# nearby_users_phone.push(user.phone)
+			# end
 		end
-		all_users = Post.where("user_id in (?)", nearby_users_ids)
-		nearby_users_array.push(all_users)
-		nearby_users_array.push(user.phone)
-		render json: {user_list: nearby_users_array}  
+		all_users_phone = User.where("id in (?)",nearby_users_ids)
+		render json: {user_list: all_users_phone}
+		# all_users = Post.where("user_id in (?)", nearby_users_ids)
+		# all_users_phone = User.where("User id in (?)", nearby_users_ids)
+		# nearby_users_array.push(all_users_phone)
+		# # nearby_users_array.push(nearby_users_ids)
+		# # nearby_users_array.push(nearby_users_phone)
+		# render json: {user_list: nearby_users_array}  
 	end
 		
 	def post_params
