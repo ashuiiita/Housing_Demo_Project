@@ -17,9 +17,16 @@ class PostsController < ApplicationController
 	  fail = {status:"0"}
 	  success = {status:"1"}
 	  user_id = LoginUser.find_by(token: post_params[:token], email:post_params[:email])
-	  post = Post.new(content: post_params[:content], user_id: user_id, longitude: post_params[:longitude], latitude: post_params[:latitude])
-
-	  if User.find(user_id)
+	  lat_rad = (post_params[:latitude]).to_f
+	  lat_rad = lat_rad * 0.0174532925
+	  lat_rad = lat_rad.round(4)
+	  lon_rad = (post_params[:longitude]).to_f
+	  lon_rad = lon_rad * 0.0174532925
+	  lon_rad = lon_rad.round(4)
+	  
+	  post = Post.new(content: post_params[:content], user_id: user_id[:user_id], latitude: lat_rad , longitude: lon_rad)
+	  
+	  if User.find(user_id[:user_id])
 	  	post.save
 	  	render json: success
 	  else
@@ -52,11 +59,12 @@ class PostsController < ApplicationController
 				nearby_users_ids.push(user.user_id)
 			end
 		end
-		render json: Post.where("user_id in (?)", nearby_users_ids)
+		render json: nearby_users
+		#render json: Post.where("user_id in (?)", nearby_users_ids)
 	end
 		
 	def post_params
-	  	params.permit(:content, :email, :token)
+	  	params.permit(:content, :email, :token, :latitude, :longitude)
 	end
 	
 	def user_find_params
