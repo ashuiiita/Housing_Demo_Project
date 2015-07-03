@@ -59,7 +59,7 @@ class PostsController < ApplicationController
 			t6 = 2 * Math.asin(t5)
 			t7 = 6371 * t6
 
-			if(t7 <= 100.0 && user.email != find_params[:email])
+			if(t7 <= 0.01 && user.email != find_params[:email])
 				user_find = {userId: user.user_id,name: user.name , email: user.email , distance: t7}
 				nearby_users_ids.push(user.user_id)
 				nearby_users.push(user_find)
