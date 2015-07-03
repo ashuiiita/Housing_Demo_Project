@@ -46,7 +46,9 @@ class PostsController < ApplicationController
         nearby_users_ids = Array.new
         nearby_users_array = Array.new
         nearby_users_phone = Array.new
-
+        content = Array.new
+        final = Array.new
+        user_portfolio = Array.new
 		LoginUser.all.each do |user|
 			t =  user.latitude - lat
 			t1 = user.longitude - lon
@@ -66,8 +68,26 @@ class PostsController < ApplicationController
 				# nearby_users_phone.push(user.phone)
 			# end
 		end
-		all_users_phone = User.where("id in (?)",nearby_users_ids)
-		render json: {user_list: all_users_phone}
+		all_users_content = Post.where("user_id in (?)",nearby_users_ids)
+
+		all_users_content.all.each do |post|
+			User.all.each do |user|
+				if(user.id == post.user_id)
+					userData = {user_id: user.id , name: user.name , email: user.email , phone: user.phone , content: post.content , created_at: post.created_at , latitude: post.latitude , longitude: post.longitude }
+					user_portfolio.push(userData)
+				end	
+			end
+		end
+		render json: {user_detail: user_portfolio}
+
+
+
+		# render json: {user_detail1: all_users_phone , user_content: all_users_content}
+		# render json: User.all.to_json(:include => {:Post => {:only => :content}})
+		# @user = Post.includes(:user).find(params[:id])
+
+		# render :json => @user.to_json(include: :post)
+
 		# all_users = Post.where("user_id in (?)", nearby_users_ids)
 		# all_users_phone = User.where("User id in (?)", nearby_users_ids)
 		# nearby_users_array.push(all_users_phone)
